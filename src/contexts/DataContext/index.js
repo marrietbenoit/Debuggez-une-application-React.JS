@@ -30,13 +30,27 @@ export const DataProvider = ({ children }) => {
     if (data) return;
     getData();
   });
-  
+  // Find the latest event
+// Find the latest event
+let last;
+
+if (data && data.events) {
+  // Sort events from newest to oldest
+  const sortedEvents = [...data.events].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
+
+  // Retrieve the first event
+  const [latestEvent] = sortedEvents
+  last = latestEvent;
+}
   return (
     <DataContext.Provider
       // eslint-disable-next-line react/jsx-no-constructed-context-values
       value={{
         data,
         error,
+        last,
       }}
     >
       {children}

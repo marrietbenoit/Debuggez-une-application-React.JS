@@ -8,14 +8,25 @@ const mockContactApi = () => new Promise((resolve) => { setTimeout(resolve, 500)
 
 const Form = ({ onSuccess, onError }) => {
   const [sending, setSending] = useState(false);
+  // Reset the Select component after successful submission
+const [formKey, setFormKey] = useState(0)
   const sendContact = useCallback(
     async (evt) => {
       evt.preventDefault();
+      // Store the form element before the asynchronous request
+const form = evt.currentTarget;
       setSending(true);
       // We try to call mockContactApi
       try {
         await mockContactApi();
         setSending(false);
+          // Reset the form after successful submission
+  form.reset()
+// Reset the custom Select component
+setFormKey((previousKey) => previousKey + 1)
+          // Notify the parent component of the successful submission
+  onSuccess();
+
       } catch (err) {
         setSending(false);
         onError(err);
@@ -30,6 +41,8 @@ const Form = ({ onSuccess, onError }) => {
           <Field placeholder="" label="Nom" />
           <Field placeholder="" label="Prénom" />
           <Select
+            key={formKey}
+
             selection={["Personel", "Entreprise"]}
             onChange={() => null}
             label="Personel / Entreprise"

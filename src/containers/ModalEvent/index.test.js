@@ -22,7 +22,8 @@ describe("When Modal data is created", () => {
   it("a list of mandatories data is displayed", async () => {
     render(<ModalEvent event={data} />);
     await screen.findByText("1 espace d’exposition");
-    await screen.findByText("24-25-26 Février");
+    // Check that the displayed month and year match the event date
+await screen.findByText("avril 2022");
     await screen.findByText(
       "Présentation des outils analytics aux professionnels du secteur"
     );

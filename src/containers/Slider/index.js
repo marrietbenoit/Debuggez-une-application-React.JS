@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 import { useData } from "../../contexts/DataContext";
 import { getMonth } from "../../helpers/Date";
 
@@ -10,21 +10,26 @@ const Slider = () => {
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
     new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
   );
-  const nextCard = () => {
-    setTimeout(
-      () => setIndex(index < byDateDesc.length ? index + 1 : 0),
-      5000
-    );
-  };
-  useEffect(() => {
-    nextCard();
-  });
+ 
+// Start the timer only when slide data is available
+useEffect(() => {
+ if (!byDateDesc?.length) return undefined
+
+  // Move to the next slide after 5 seconds
+  const timer = setTimeout(() => {
+    setIndex(index < byDateDesc.length - 1 ? index + 1 : 0)
+  }, 5000)
+
+  // Cancel the previous timer
+  return () => clearTimeout(timer)
+}, [index, byDateDesc])
+
   return (
     <div className="SlideCardList">
       {byDateDesc?.map((event, idx) => (
-        <>
-          <div
-            key={event.title}
+    <div
+      key={event.title}
+           
             className={`SlideCard SlideCard--${
               index === idx ? "display" : "hide"
             }`}
@@ -38,22 +43,29 @@ const Slider = () => {
               </div>
             </div>
           </div>
-          <div className="SlideCard__paginationContainer">
-            <div className="SlideCard__pagination">
-              {byDateDesc.map((_, radioIdx) => (
-                <input
-                  key={`${event.id}`}
-                  type="radio"
-                  name="radio-button"
-                  checked={idx === radioIdx}
-                />
-              ))}
-            </div>
-          </div>
-        </>
+ 
+     
       ))}
+
+      {/* Display only one pagination group */}
+      <div className="SlideCard__paginationContainer">
+        <div className="SlideCard__pagination">
+          {byDateDesc?.map((slide, radioIdx) => (
+            <input
+              key={slide.title}
+              type="radio"
+              name="radio-button"
+              checked={index === radioIdx}
+               readOnly
+            />
+          ))}
+        </div>
+      </div>
     </div>
-  );
-};
+  )
+}
+    
+ 
+
 
 export default Slider;
